@@ -1,0 +1,43 @@
+# create a action file that runs yarn install then yarn deploy. After that, upload release-extension.7z to releases tab based on github actions
+
+name: Release Extension
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+    release-extension:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+        - name: Install Node.js
+          uses: actions/setup-node@v1
+          with:
+            node-version: 12
+        - name: Install Yarn
+          run: npm install -g yarn
+        - name: Install Dependencies
+          run: yarn install
+        - name: Build Extension
+          run: yarn deploy
+        - name: Archive Extension
+          run: 7z a release-extension.7z dist
+        - name: Create Release
+          uses: actions/create-release@latest
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            body: Release ${{ github.ref }}
+            draft: false
+            prerelease: false
+        - name: Upload Release
+          uses: actions/upload-release-asset@latest
+          with:
+            # upload_url: ${{ github.event.release.upload_url }}
+            asset_path: ./release-extension.7z
+            asset_name: release-extension.7z
+            asset_content_type: application/x-7z-compressed
