@@ -28,7 +28,9 @@ jobs:
           with:
             files: |
               release-extension.7z
-            tag_name: Release ${{ github.ref }}
+              LICENSE
+              dist/info.json
+            tag_name: Release-${{ github.ref }}
             body: |
               Just install in vortex and enjoy!
             draft: false
