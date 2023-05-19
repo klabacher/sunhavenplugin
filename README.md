@@ -11,3 +11,5 @@ For those who want to mod your game and have no complications on managing.
 sunhavenplugin is a nexus mod extension
 
 ### You can easily install it on [Releases Tab](https://github.com/klabacher/sunhavenplugin/releases)
+
+This is not official and have no official connection to pixel sprout
