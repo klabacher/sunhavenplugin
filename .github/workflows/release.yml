@@ -16,28 +16,15 @@ jobs:
         - name: Install Node.js
           uses: actions/setup-node@v1
           with:
-            node-version: 12
+            node-version: 16
         - name: Install Yarn
           run: npm install -g yarn
         - name: Install Dependencies
           run: yarn install
         - name: Build Extension
           run: yarn deploy
-        # - name: Create Release
-        #   uses: actions/create-release@latest
-        #   env:
-        #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #   with:
-        #     tag_name: Release ${{ github.ref }}
-        #     release_name: Release ${{ github.ref }}
-        #     body: |
-        #       Just install in vortex and enjoy!
-        #     draft: false
-        #     prerelease: false
         - name: Release
           uses: softprops/action-gh-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
             files: |
               release-extension.7z
@@ -46,6 +33,7 @@ jobs:
               Just install in vortex and enjoy!
             draft: false
             prerelease: false
+            token: ${{ secrets.GITHUB_TOKEN }}
                       
       
 
