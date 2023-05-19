@@ -6,12 +6,15 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "v*.*.*"
 
 jobs:
-    release-extension:
+    build-extension:
         runs-on: ubuntu-latest
         steps:
-        - uses: actions/checkout@v2
+        - name: Checkout code
+          uses: actions/checkout@v3
         - name: Install Node.js
           uses: actions/setup-node@v1
           with:
@@ -22,22 +25,29 @@ jobs:
           run: yarn install
         - name: Build Extension
           run: yarn deploy
-        - name: Archive Extension
-          run: 7z a release-extension.7z dist
-        - name: Create Release
-          uses: actions/create-release@latest
+        # - name: Create Release
+        #   uses: actions/create-release@latest
+        #   env:
+        #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #   with:
+        #     tag_name: Release ${{ github.ref }}
+        #     release_name: Release ${{ github.ref }}
+        #     body: |
+        #       Just install in vortex and enjoy!
+        #     draft: false
+        #     prerelease: false
+        - name: Release
+          uses: softprops/action-gh-release@v1
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
-            tag_name: ${{ github.ref }}
-            release_name: Release ${{ github.ref }}
-            body: Release ${{ github.ref }}
+            files: |
+              release-extension.7z
+            tag_name: Release ${{ github.ref }}
+            body: |
+              Just install in vortex and enjoy!
             draft: false
             prerelease: false
-        - name: Upload Release
-          uses: actions/upload-release-asset@latest
-          with:
-            # upload_url: ${{ github.event.release.upload_url }}
-            asset_path: ./release-extension.7z
-            asset_name: release-extension.7z
-            asset_content_type: application/x-7z-compressed
+                      
+      
+
