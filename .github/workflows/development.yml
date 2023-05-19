@@ -1,0 +1,46 @@
+# create a action file that runs yarn install then yarn deploy. After that, upload release-extension.7z to releases tab based on github actions
+
+name: Release Extension
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+    build-extension:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+        - name: Install Node.js
+          uses: actions/setup-node@v1
+          with:
+            node-version: 16
+        - name: Install Yarn
+          run: npm install -g yarn
+        - name: Install Dependencies
+          run: yarn install
+        - name: Build Extension
+          run: yarn deploy
+        - name: Get Version
+          id: get-version
+          run: echo "version=$(cat dist/info.json | jq -r '.version')" >> $GITHUB_OUTPUT
+        - name: Release
+          uses: softprops/action-gh-release@v1
+          with:
+            # This is the name of the file that will be uploaded to the release, the format is Release-<version>
+            name: PreRelease-${{ steps.get-version.outputs.version }}
+            files: |
+              release-extension.7z
+              LICENSE
+              dist/info.json
+            tag_name: PreRelease
+            body: |
+              Just install in vortex and enjoy!
+            draft: false
+            prerelease: true
+            token: ${{ secrets.GITHUB_TOKEN }}
+                      
+      
+
