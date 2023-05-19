@@ -23,14 +23,19 @@ jobs:
           run: yarn install
         - name: Build Extension
           run: yarn deploy
+        - name: Get Version
+          id: get-version
+          run: cat package.json | jq -r '.version' > version.txt
         - name: Release
           uses: softprops/action-gh-release@v1
           with:
+            # This is the name of the file that will be uploaded to the release, the format is Release-<version>
+            name: Release-${{ steps.get-version.outputs.version }}
             files: |
               release-extension.7z
               LICENSE
               dist/info.json
-            tag_name: Release-${{ github.ref }}
+            tag_name: Release
             body: |
               Just install in vortex and enjoy!
             draft: false
